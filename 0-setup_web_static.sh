@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
-# Script that configures Nginx server with some folders and files
-apt-get -y update
-apt-get -y install nginx
-service nginx start
-mkdir -p /data/web_static/releases/test/
-mkdir -p /data/web_static/shared/
-echo "Holberton School" > /data/web_static/releases/test/index.html
-ln -sf /data/web_static/releases/test/ /data/web_static/current
-chown -R ubuntu:ubuntu /data/
-sed -i '38i\\tlocation /hbnb_static/ {\n\t\talias /data/web_static/current/;\n\t\tautoindex off;\n\t}\n' /etc/nginx/sites-available/default
+# setup server for deployment web_static
+apt-get update -y
+apt-get upgrade -y
+apt-get install nginx -y
+mkdir -p /data/web_static
+mkdir -p /data/web_static/releases
+mkdir -p /data/web_static/shared
+mkdir -p /data/web_static/releases/test
+echo "test deploying web_static" > /data/web_static/releases/test/index.html
+ln -fs /data/web_static/releases/test /data/web_static/current
+chown -R ubuntu:ubuntu /data
+sed -i '/^\tserver_name/ a\\tlocation /hbnb_static \{\n\t\talias /data/web_static/current;\n\t\}\n' /etc/nginx/sites-available/default
 service nginx restart
-exit 0
